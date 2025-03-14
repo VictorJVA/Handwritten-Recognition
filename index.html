@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Handwritten number recognition</title>
+</head>
+<body>
+    <input type="file" id="file-input" accept="image/*">
+    <button onclick="uploadImage()">Upload Image</button>
+    <p id="predictionResult"></p>
+
+    <script type="text/javascript">
+         async function uploadImage() {
+
+            const input = document.getElementById('file-input');
+            if (!input.files || !input.files[0]) {
+                alert('Please select an image');
+            }
+
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            console.log(formData);
+            try{
+                const response = await fetch('http://127.0.0.1:8000/predict-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                document.getElementById('predictionResult').innerText = `Prediction: ${result.prediction}`;
+            } catch (error) {
+                console.error(error);
+                alert('Something went wrong');
+            }
+
+        }
+
+    </script>
+</body>
+</html>
